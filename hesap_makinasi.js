@@ -18,8 +18,9 @@ async function load() {
     // connect to the NEAR Wallet
     wallet = new nearApi.WalletConnection(near, 'hesapmakinasi');
     // connect to a NEAR smart contract
-    contract = new nearApi.Contract(wallet.account(), 'dev-1649238083588-47863565070493', {
-        changeMethods: ['topla', 'carpma', 'bolme', 'cikarma']
+    contract = new nearApi.Contract(wallet.account(), 'dev-1650140529355-49775129596989', {
+        viewMethods: ["sayi"],
+        changeMethods: ['topla', 'carpma', 'bolme', 'cikar']
       });
     if(wallet.isSignedIn()){
         baglan_button.textContent='sign out';
@@ -34,13 +35,20 @@ baglan_button.addEventListener('click', async function() {
     console.log(wallet);
     if(!wallet.isSignedIn()){
         wallet.requestSignIn(
-            "dev-1649238083588-47863565070493" // contract address
+            "dev-1650140529355-49775129596989" // contract address
         );
     } else {
         wallet.signOut();
         baglan_button.textContent="sign in";
     }
 });
+
+async function sayi_getir(){
+    var response = await contract.sayi({})
+    document.getElementById("sonuc").value = response;
+}
+
+
 
 
 topla_button.addEventListener('click', async function(){
@@ -49,7 +57,7 @@ topla_button.addEventListener('click', async function(){
         "b": parseInt(document.getElementById("ikinci_sayi").value)
         
     })
-    document.getElementById("sonuc").value = response;
+    sayi_getir();
 })
 
 carpma_button.addEventListener('click', async function(){
@@ -58,16 +66,16 @@ carpma_button.addEventListener('click', async function(){
         "b": parseInt(document.getElementById("ikinci_sayi").value)
         
     })
-    document.getElementById("sonuc").value = response;
+    sayi_getir();
 })
 
 cikarma_button.addEventListener('click', async function(){
-    var response = await contract.cikarma({
+    var response = await contract.cikar({
         "a": parseInt(document.getElementById("birinci_sayi").value),
         "b": parseInt(document.getElementById("ikinci_sayi").value)
         
     })
-    document.getElementById("sonuc").value = response;
+    sayi_getir();
 })
 bolme_button.addEventListener('click', async function(){
     var response = await contract.bolme({
@@ -75,5 +83,5 @@ bolme_button.addEventListener('click', async function(){
         "b": parseInt(document.getElementById("ikinci_sayi").value)
         
     })
-    document.getElementById("sonuc").value = response;
+    sayi_getir();
 })
